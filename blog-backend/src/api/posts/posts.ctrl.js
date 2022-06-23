@@ -72,18 +72,17 @@ export const list = async ctx => {
             .sort({ _id: -1 })
             .limit(10)
             .skip((page - 1) * 10)
+            .lean() // 이 함수를 사용하면 처음부터 데이터를 JSON형태로 조회할수 있음
             .exec();
         const postCount = await Post.countDocuments().exec();
-        console.log(postCount);
-        ctx.set('Last-Page', Math.ceil(postCount / 10));
+        ctx.set('Last-Page', Math.ceil(postCount / 10)); // 응답헤더에 정보 추가
         ctx.body = posts
-            .map(post => post.toJSON())
+            // .map(post => post.toJSON())
             .map(post => ({
                 ...post,
                 body:
                     post.body.length < 200 ? post.body : `${post.body.slice(0, 200)}...`,
-            }))
-        ctx.body = posts;
+            }));
     } catch (e) {
         ctx.throw(500, e);
     }
