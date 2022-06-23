@@ -42,10 +42,12 @@ export const write = async ctx => {
     }
 
     const { title, body, tags } = ctx.request.body;
+    const { user } = ctx.state;
     const post = new Post({
         title,
         body,
         tags,
+        user,
     });
     try {
         await post.save();
